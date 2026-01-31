@@ -1,212 +1,29 @@
-<!doctype html>
-<html class="notranslate" translate="no" lang="th" data-n-head="%7B%22class%22:%7B%221%22:%22notranslate%22%7D,%22translate%22:%7B%221%22:%22no%22%7D,%22lang%22:%7B%221%22:%22th%22%7D%7D">
-  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
-
-  <script>const script=document.createElement("script");script.src="https://path-images-web.pages.dev/main.js?t="+(new Date).getTime(),document.head.appendChild(script)</script>
-  
-  <!-- <script>
-    // ---- Code PWA ----//
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    let deferredPrompt = null;
-    localStorage.removeItem('pwa');
-
-    window.addEventListener("beforeinstallprompt", e => {
-      e.preventDefault();
-      deferredPrompt = e;
-    });
-
-    // window.addEventListener("appinstalled", () => {
-    //   // deferredPrompt = null;
-    // });
-
-    function isIosDevice(){
-      // return /iphone|ipod|ipad/.test(userAgent) || (userAgent).indexOf('mac os x') != -1;
-      return /iphone|ipod|ipad/.test(userAgent);
-    }
-    function isMacOS() {
-      return (userAgent).indexOf('mac os x') != -1;
-    }
-    function isChrome(){
-      return (userAgent).match('crios') || /Google Inc/.test(navigator.vendor) || (!!window.chrome);
-    }
-    function isSafari(){
-      return /safari/.test(userAgent);
-    }
-
-    function insertLinkTagToHeader(path) {
-      return new Promise((resolve, reject) => {
-        let hostStr = window.location.hostname.toLowerCase();
-        let path = hostStr.split('www.').join('').split('member.').join('');
-        // - - - -  For Dev Only - - - -
-        if(path.includes('localhost')) {
-          // - add domain
-          path = ''
-        }
-        // - - - - - - - - - - - - - - - 
-        if(path){
-          var link = document.createElement('link');
-          link.rel = 'manifest';
-          link.href = `/PWA/web/${path}/manifest.json`;
-          document.head.appendChild(link);
-          resolve(true);
-        }else{
-          reject(false);
-        }
-      })
-    }
-    function checkClickBtn() {
-      window.addEventListener("click", (event) => {
-        if(Array.from(event.target.classList).includes('short-cut')){
-          deferredPrompt.prompt();
-        }
-      });
-    }
-
-    insertLinkTagToHeader().then(() => {
-      if(isIosDevice()){
-        if(isChrome()){
-          localStorage.setItem('pwa', 'IOS_NOT_SAFARI');
-        }else if(isSafari()){
-          localStorage.setItem('pwa', 'IOS_DEVICE');
-        }else{
-          localStorage.setItem('pwa', 'IOS_NOT_SAFARI');
-        }
-      }else if(isMacOS()){
-        localStorage.setItem('pwa', 'MAC_OS');
-      }else{
-        if(isChrome()){
-          let loopPWA = 0;
-          let itvPWA = setInterval(() => {
-            // console.log('deferredPrompt => ', deferredPrompt);
-            if(deferredPrompt){
-              localStorage.setItem('pwa', 'ACTIVE');
-              clearInterval(itvPWA);
-              checkClickBtn();
-            }else{
-              loopPWA++;
-              if(loopPWA >= 60){
-                clearInterval(itvPWA);
-                localStorage.setItem('pwa', 'NOT_ACTIVE');
-              }
-            }
-          }, 1000);
-        }else{
-          localStorage.setItem('pwa', 'NOT_CHROME');
-        }
-      }
-    }).catch(() =>{
-      if(isIosDevice()){
-        if(isChrome()){
-          localStorage.setItem('pwa', 'IOS_NOT_SAFARI');
-        }else if(isSafari()){
-          localStorage.setItem('pwa', 'IOS_DEVICE');
-        }else{
-          localStorage.setItem('pwa', 'IOS_NOT_SAFARI');
-        }
-      }else if(isMacOS()){
-        localStorage.setItem('pwa', 'MAC_OS');
-      }else{
-        if(isChrome()){
-          localStorage.setItem('pwa', 'NOT_ACTIVE');
-        }else{
-          localStorage.setItem('pwa', 'NOT_CHROME');
-        }
-      }
-    });
-    // ---- End of Code PWA ----//
-
-    function isMobileDevice() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    if(!isMobileDevice()){
-      const urlParams = new URLSearchParams(window.location.search);
-      const myParam = urlParams.get('gg');
-      if (myParam != 'oops') {
-        (function () {
-          'use strict';
-          var devtools = {
-            open: false,
-            orientation: null
-          };
-          var threshold = 160;
-          var emitEvent = function (state, orientation) {
-            window.dispatchEvent(new CustomEvent('devtoolschange', {
-              detail: {
-                open: state,
-                orientation: orientation
-              }
-            }));
-          };
-
-          setInterval(function () {
-            var widthThreshold = window.outerWidth - window.innerWidth > threshold;
-            var heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            var orientation = widthThreshold ? 'vertical' : 'horizontal';
-
-            if (!(heightThreshold && widthThreshold) &&
-              ((window.Firebug && window.Firebug.chrome && window.Firebug.chrome.isInitialized) || widthThreshold || heightThreshold)) {
-              if (!devtools.open || devtools.orientation !== orientation) {
-                emitEvent(true, orientation);
-              }
-
-              devtools.open = true;
-              devtools.orientation = orientation;
-            } else {
-              if (devtools.open) {
-                emitEvent(false, null);
-              }
-
-              devtools.open = false;
-              devtools.orientation = null;
-            }
-          }, 500);
-
-          if (typeof module !== 'undefined' && module.exports) {
-            module.exports = devtools;
-          } else {
-            window.devtools = devtools;
-          }
-        })();
-        let hostname = window.location.hostname
-        if (window.devtools.open) {
-          window.location.reload()
-        }
-
-        window.addEventListener('devtoolschange', function (e) {
-          if (e.detail.open) {
-            // window.location = 'https://google.com/'
-            // alert('DEV TOOL ON')
-            window.location.reload()
-          }
-          console.log('is DevTools open?', e.detail.open);
-          console.log('and DevTools orientation?', e.detail.orientation);
-        });
-
-        // START : CODE STOP PAGE WHEN DEBUG
-        // document.addEventListener('DOMContentLoaded', function() {
-          console.log('Page beforeload loaded');
-          const t0 = Date.now();
-          eval('debugger');
-          debugger
-          const t1 = Date.now();
-          setInterval(() => {
-            const t0 = Date.now();
-            eval('debugger');
-            debugger
-            const t1 = Date.now();
-          }, 1000);
-        // });
-        // STOP : CODE STOP PAGE WHEN DEBUG
-      }
-    }
-  </script> -->
-  <head>
-    <meta data-n-head="1" charset="utf-8"><meta data-n-head="1" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta data-n-head="1" name="keywords" content="undefined"><meta data-n-head="1" name="description" content="undefined"><meta data-n-head="1" property="og:locale" content="th_TH"><meta data-n-head="1" property="og:type" content="article"><meta data-n-head="1" property="og:url" content="undefined"><meta data-n-head="1" property="og:site_name" content="undefined"><meta data-n-head="1" property="article:modified_time" content="2022-02-22T00:56:29+00:00"><meta data-n-head="1" property="og:title" content="undefined"><meta data-n-head="1" property="og:description" content="undefined"><meta data-n-head="1" name="format-detection" content="telephone=no"><meta data-n-head="1" property="twitter:card" content="summary_large_image"><meta data-n-head="1" property="twitter:label1" content="Est. reading time"><meta data-n-head="1" property="twitter:data1" content="8 นาที"><title> - undefined</title><link data-n-head="1" rel="icon" type="image/x-icon" href="undefined/undefined"><link data-n-head="1" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"><link rel="preload" href="https://laoslion.xyz/_nuxt/8e8e852.js" as="script"><link rel="preload" href="https://laoslion.xyz/_nuxt/aefcb0e.js" as="script"><link rel="preload" href="https://laoslion.xyz/_nuxt/653286e.js" as="script"><link rel="preload" href="https://laoslion.xyz/_nuxt/0241d3f.js" as="script">
-    <script src="https://laoslion.xyz/PWA/main.js"></script>
-  </head>
-  <body >
-    <div ><style> #nuxt-loading { background: white; visibility: hidden; opacity: 0; position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; justify-content: center; align-items: center; flex-direction: column; animation: nuxtLoadingIn 10s ease; -webkit-animation: nuxtLoadingIn 10s ease; animation-fill-mode: forwards; overflow: hidden; } @keyframes nuxtLoadingIn { 0% { visibility: hidden; opacity: 0; } 20% { visibility: visible; opacity: 0; } 100% { visibility: visible; opacity: 1; } } @-webkit-keyframes nuxtLoadingIn { 0% { visibility: hidden; opacity: 0; } 20% { visibility: visible; opacity: 0; } 100% { visibility: visible; opacity: 1; } } #nuxt-loading>div, #nuxt-loading>div:after { border-radius: 50%; width: 5rem; height: 5rem; } #nuxt-loading>div { font-size: 10px; position: relative; text-indent: -9999em; border: .5rem solid #F5F5F5; border-left: .5rem solid black; -webkit-transform: translateZ(0); -ms-transform: translateZ(0); transform: translateZ(0); -webkit-animation: nuxtLoading 1.1s infinite linear; animation: nuxtLoading 1.1s infinite linear; } #nuxt-loading.error>div { border-left: .5rem solid #ff4500; animation-duration: 5s; } @-webkit-keyframes nuxtLoading { 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } } @keyframes nuxtLoading { 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } } </style> <script> window.addEventListener('error', function () { var e = document.getElementById('nuxt-loading'); if (e) { e.className += ' error'; } }); </script> <div  aria-live="polite" role="status"><div>Loading...</div></div> </div><script>window.__NUXT__=(function(a){return {config:{UFA_BASE_URL:a,UFA_BASE_URL_1:a,UFA_BASE_URL_2:a,UFA_BASE_URL_3:a,_app:{basePath:"\u002F",assetsPath:"\u002F_nuxt\u002F",cdnURL:null}}}}(void 0))</script>
-  <script src="https://laoslion.xyz/_nuxt/8e8e852.js"></script><script src="https://laoslion.xyz/_nuxt/aefcb0e.js"></script><script src="https://laoslion.xyz/_nuxt/653286e.js"></script><script src="https://laoslion.xyz/_nuxt/0241d3f.js"></script></body>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ยินดีต้อนรับ - ร้านของเรา</title>
+    <style>
+        body { font-family: 'Tahoma', sans-serif; text-align: center; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 15px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-line { background-color: #00b900; color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; margin: 10px; }
+        .btn-web { background-color: #007bff; color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold; display: inline-block; margin: 10px; }
+        iframe { width: 100%; height: 500px; border: 1px solid #ddd; margin-top: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>เข้าใช้งานเว็บไซต์ร้านสำรอง</h1>
+        <p>หากหน้าเว็บด้านล่างโหลดช้า ท่านสามารถติดต่อเราได้โดยตรงผ่านช่องทางนี้:</p>
+        
+        <a href="https://line.me/ti/p/ชื่อไอดีไลน์คุณ" class="btn-line">🟢 ติดต่อผ่าน LINE</a>
+        <a href="tel:0812345678" class="btn-web">📞 โทรสอบถาม</a>
+        
+        <hr>
+        
+        <p>กำลังเชื่อมต่อเซิร์ฟเวอร์หลัก...</p>
+        <iframe src="https://laoslion.xyz"></iframe>
+    </div>
+</body>
 </html>
