@@ -1,4 +1,4 @@
-name: Update Website Mirror
+name: Full Static Mirror
 on:
   schedule:
     - cron: '0 * * * *'
@@ -11,24 +11,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Clone and Fix Paths
+      - name: Snapshot Website
         run: |
-          # 1. ดึงข้อมูลหน้าเว็บ
-          # *** เปลี่ยน URL ด้านล่างนี้เป็น URL เว็บจริงของคุณ ***
+          # 1. เปลี่ยน URL เป็นเว็บจริงของคุณ
           TARGET_URL="https://laoslion.xyz"
-          curl -L "$TARGET_URL" -o index.html
-
-          # 2. แก้ไข Path จาก /_nuxt/ เป็น URL เต็ม เพื่อให้โหลดไฟล์ได้แม้จะอยู่บน GitHub
-          sed -i "s|src=\"/_nuxt/|src=\"$TARGET_URL/_nuxt/|g" index.html
-          sed -i "s|href=\"/_nuxt/|href=\"$TARGET_URL/_nuxt/|g" index.html
           
-          # 3. แก้ไข Path ของไฟล์ PWA หรือ Script อื่นๆ
-          sed -i "s|src=\"/PWA/|src=\"$TARGET_URL/PWA/|g" index.html
+          # 2. ดูดโค้ดหน้าเว็บแบบ Bypass Cloudflare เบื้องต้น
+          curl -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "$TARGET_URL" -o index.html
 
-      - name: Push to GitHub
+          # 3. ตัดระบบ Loading ที่ทำให้หน้าเว็บหมุนค้างออก (สำหรับ Nuxt/Vue)
+          sed -i 's/id="__nuxt"//g' index.html
+          sed -i 's/id="nuxt-loading"//g' index.html
+          
+          # 4. เปลี่ยน Path ไฟล์ให้วิ่งไปที่เว็บจริง (แบบระบุชื่อโดเมนเต็ม)
+          sed -i "s|src=\"/|src=\"$TARGET_URL/|g" index.html
+          sed -i "s|href=\"/|href=\"$TARGET_URL/|g" index.html
+
+      - name: Push Changes
         run: |
           git config --global user.name "Mirror-Bot"
           git config --global user.email "bot@github.com"
           git add index.html
-          git commit -m "Fix paths and update mirror" || exit 0
+          git commit -m "Create static snapshot" || exit 0
           git push
