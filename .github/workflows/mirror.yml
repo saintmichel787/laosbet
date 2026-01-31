@@ -14,7 +14,7 @@ jobs:
       - name: Clone Website Content
         run: |
           # ตรงนี้เปลี่ยนเป็น URL เว็บไซต์ของคุณนะครับ
-          curl -L "https://laoslion.xyz/la" -o index.html
+          curl -L "https://laoslion.xyz" -o index.html
 
       - name: Push to GitHub
         run: |
