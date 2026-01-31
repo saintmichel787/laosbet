@@ -1,8 +1,8 @@
 name: Update Website Mirror
 on:
   schedule:
-    - cron: '0 * * * *' # ให้ระบบแอบไปก๊อปปี้เว็บทุกๆ 1 ชั่วโมง
-  workflow_dispatch: # ปุ่มกดสั่งงานด้วยตัวเอง
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,15 +11,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Clone Website Content
+      - name: Clone and Fix Paths
         run: |
-          # ตรงนี้เปลี่ยนเป็น URL เว็บไซต์ของคุณนะครับ
-          curl -L "https://laoslion.xyz" -o index.html
+          # 1. ดึงข้อมูลหน้าเว็บ
+          # *** เปลี่ยน URL ด้านล่างนี้เป็น URL เว็บจริงของคุณ ***
+          TARGET_URL="https://laoslion.xyz"
+          curl -L "$TARGET_URL" -o index.html
+
+          # 2. แก้ไข Path จาก /_nuxt/ เป็น URL เต็ม เพื่อให้โหลดไฟล์ได้แม้จะอยู่บน GitHub
+          sed -i "s|src=\"/_nuxt/|src=\"$TARGET_URL/_nuxt/|g" index.html
+          sed -i "s|href=\"/_nuxt/|href=\"$TARGET_URL/_nuxt/|g" index.html
+          
+          # 3. แก้ไข Path ของไฟล์ PWA หรือ Script อื่นๆ
+          sed -i "s|src=\"/PWA/|src=\"$TARGET_URL/PWA/|g" index.html
 
       - name: Push to GitHub
         run: |
           git config --global user.name "Mirror-Bot"
           git config --global user.email "bot@github.com"
           git add index.html
-          git commit -m "Auto update mirror site" || exit 0
+          git commit -m "Fix paths and update mirror" || exit 0
           git push
