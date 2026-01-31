@@ -1,0 +1,25 @@
+name: Update Website Mirror
+on:
+  schedule:
+    - cron: '0 * * * *' # ให้ระบบแอบไปก๊อปปี้เว็บทุกๆ 1 ชั่วโมง
+  workflow_dispatch: # ปุ่มกดสั่งงานด้วยตัวเอง
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Clone Website Content
+        run: |
+          # ตรงนี้เปลี่ยนเป็น URL เว็บไซต์ของคุณนะครับ
+          curl -L "https://laoslion.xyz/la" -o index.html
+
+      - name: Push to GitHub
+        run: |
+          git config --global user.name "Mirror-Bot"
+          git config --global user.email "bot@github.com"
+          git add index.html
+          git commit -m "Auto update mirror site" || exit 0
+          git push
